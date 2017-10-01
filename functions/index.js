@@ -31,3 +31,28 @@ exports.makeAnswer = functions.database.ref('/chatRoom/{uid}/message/{messageID}
             // });
         }
     });
+
+
+exports.makeLocation = functions.database.ref('/chatRoom/{uid}/message/{messageID}')
+    .onCreate(event => {
+
+        const message = event.data;
+        const type_message = message.child('type').val();
+        const sender_message = message.child('sender').val();
+
+
+        console.log('update location', event.params.messageID, type_message, sender_message);
+
+        if (type_message === 'answer_location' && sender_message === 'user') {
+            console.log('update message', event.params.messageID, type_message, sender_message);
+
+            return event.data.ref.parent.child(event.params.messageID).child('text').set('สถานี bts พร้อมพงษ์');
+            // admin.database().ref('place').orderByChild('name').equalTo(text).once('value', function(snapshot) {
+            //     const place = snapshot.val();
+            //     console.log(place);
+            // });
+        } else {
+            console.log('no update message',event.params.messageID,  type_message, sender_message);
+        }
+    });
+
